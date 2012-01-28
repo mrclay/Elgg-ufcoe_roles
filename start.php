@@ -8,7 +8,7 @@ function ufcoe_roles_init() {
     require_once __DIR__ . '/lib/UFCOE/RoleReader.php';
 
     // remove cached roles on login/logout
-	elgg_register_event_handler('login' ,'user','_ufcoe_roles_handle_loginout');
+    elgg_register_event_handler('login' ,'user','_ufcoe_roles_handle_loginout');
     elgg_register_event_handler('logout','user','_ufcoe_roles_handle_loginout');
 
     elgg_register_event_handler('pagesetup', 'system', 'ufcoe_roles_settings_sidebar');
@@ -112,7 +112,7 @@ function ufcoe_roles_add_key_alias($key, $alias, $lang = "en") {
  * Alter settings sidebar menu
  */
 function ufcoe_roles_settings_sidebar() {
-	if (elgg_get_context() == "settings") {
+    if (elgg_get_context() == "settings") {
         $roles = ufcoe_roles_get_roles_array();
         if (! empty($roles[UFCOE_RoleReader::KEY_ALL])) {
             $params = array(
@@ -122,5 +122,5 @@ function ufcoe_roles_settings_sidebar() {
             );
             elgg_register_menu_item('page', $params);
         }
-	}
+    }
 }
