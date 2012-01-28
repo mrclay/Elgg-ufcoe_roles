@@ -21,7 +21,7 @@ class UFCOE_RoleReader {
      * @param UFCOE_RoleProvider $provider
      * @return UFCOE_RoleReader
      */
-    public function addProvider($key, UFCOE_RoleProvider $provider)
+    public function setProvider($key, UFCOE_RoleProvider $provider)
     {
         $this->providers[$key] = $provider;
         if ($this->rolesWereRead) {
@@ -29,6 +29,17 @@ class UFCOE_RoleReader {
             $this->emptyCaches();
         }
         return $this;
+    }
+
+    /**
+     * @param string $key
+     * @param UFCOE_RoleProvider $provider
+     * @return UFCOE_RoleReader
+     * @deprecated
+     */
+    public function addProvider($key, UFCOE_RoleProvider $provider)
+    {
+        return $this->setProvider($key, $provider);
     }
 
     /**
@@ -59,7 +70,7 @@ class UFCOE_RoleReader {
             $roles[self::KEY_ALL] = array();
             foreach ($this->providers as $key => $provider) {
                 /* @var UFCOE_RoleProvider $provider */
-                if ($isLoggedInUser) {
+                if ($isLoggedInUser && $provider->getCacheTtl() > 0) {
                     $rolesToAdd = $this->getRolesFromSession($key, $provider, $username);
                 } else {
                     $rolesToAdd = $provider->fetchRoles($username);

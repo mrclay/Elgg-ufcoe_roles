@@ -14,6 +14,12 @@ function ufcoe_roles_init() {
     elgg_register_event_handler('pagesetup', 'system', 'ufcoe_roles_settings_sidebar');
 }
 
+/**
+ * @param string $event
+ * @param string $type
+ * @param object $user
+ * @return bool
+ */
 function _ufcoe_roles_handle_loginout($event, $type, $user) {
     // no need to instantiate reader
     unset($_SESSION['ufcoe_roles']);
@@ -63,8 +69,17 @@ function ufcoe_roles_get_roles_string($username = null) {
  * @param string $key
  * @param UFCOE_RoleProvider $provider
  */
+function ufcoe_roles_set_provider($key, UFCOE_RoleProvider $provider) {
+    ufcoe_roles_get_reader_instance()->setProvider($key, $provider);
+}
+
+/**
+ * @param string $key
+ * @param UFCOE_RoleProvider $provider
+ * @deprecated
+ */
 function ufcoe_roles_add_provider($key, UFCOE_RoleProvider $provider) {
-    ufcoe_roles_get_reader_instance()->addProvider($key, $provider);
+    ufcoe_roles_set_provider($key, $provider);
 }
 
 /**
@@ -92,7 +107,7 @@ function ufcoe_roles_get_reader_instance() {
     static $instance = null;
     if (null === $instance) {
         $instance = new UFCOE_RoleReader();
-        $instance->addProvider('elgg', new UFCOE_RoleProvider_Elgg());
+        $instance->setProvider('elgg', new UFCOE_RoleProvider_Elgg());
     }
     return $instance;
 }
@@ -102,11 +117,20 @@ function ufcoe_roles_get_reader_instance() {
  * @param string $alias of provider system
  * @param string $lang
  */
-function ufcoe_roles_add_key_alias($key, $alias, $lang = "en") {
+function ufcoe_roles_set_key_alias($key, $alias, $lang = "en") {
     $en["ufcoe_roles:key:" . $key] = $alias;
     add_translation("en", $en);
 }
 
+/**
+ * @param string $key of provider
+ * @param string $alias of provider system
+ * @param string $lang
+ * @deprecated
+ */
+function ufcoe_roles_add_key_alias($key, $alias, $lang = "en") {
+    ufcoe_roles_set_key_alias($key, $alias, $lang);
+}
 
 /**
  * Alter settings sidebar menu
